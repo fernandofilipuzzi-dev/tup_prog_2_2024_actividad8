@@ -75,14 +75,7 @@ namespace Ejercicio2
                         #endregion
 
                         #region agregar/actualizar
-                        //Cuenta cuenta = banco.VerCuentaPorNumero(numeroCuenta;
-                        Cuenta cuenta = banco.VerCuentaPorNumero(c.Numero);
-                        if (cuenta == null)
-                        {
-                            //cuenta=banco.AgregarCuenta(dni, nombre, numero);
-                            cuenta = banco.AgregarCuenta(p.DNI, p.Nombre, c.Numero);
-                        }
-                        //cuenta.Saldo = saldo;
+                        Cuenta cuenta = banco.AgregarCuenta(p.DNI, p.Nombre, c.Numero);
                         cuenta.Saldo = c.Saldo;
                         #endregion
                     }

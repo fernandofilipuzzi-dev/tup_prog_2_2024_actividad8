@@ -17,7 +17,6 @@ namespace Ejercicio1.Models
         {
             get { return clientes.Count; }
         }
-
         public Cuenta AgregarCuenta(int dni, string nombre, int numeroCuenta)
         {
             Persona cliente = VerClientePorDNI(dni);
@@ -27,44 +26,54 @@ namespace Ejercicio1.Models
                 cliente = new Persona(dni, nombre);
                 clientes.Add(cliente);
             }
-
-            Cuenta nueva = new Cuenta(numeroCuenta, cliente);
-            cuentas.Add(nueva);
-
-            return nueva;
+            
+            //verificar si existe la cuenta
+            Cuenta cuenta = VerCuentaPorNumero(numeroCuenta);
+            if (cuenta == null)
+            {
+                cuenta = new Cuenta(numeroCuenta, cliente);
+                cuentas.Add(cuenta);
+            }
+            return cuenta;
         }
-
         public Cuenta VerCuenta(int idx)
         {
             if (idx >= 0 && idx < CantidadCuentas)
+            {
                 return cuentas[idx];
+            }
             return null;
         }
-
         public Persona VerCliente(int idx)
         {
             if (idx >= 0 && idx < CantidadClientes)
+            {
                 return clientes[idx];
+            }
             return null;
         }
-
         public Cuenta VerCuentaPorNumero(int numeroCuenta)
         {
+            cuentas.Sort();
             Cuenta cuenta = null;
             int idx = cuentas.BinarySearch(new Cuenta(numeroCuenta, null));
-            if (idx >= 0) cuenta = cuentas[idx];
-            return null;
+            if (idx >= 0)
+            {
+                cuenta = cuentas[idx];
+            }
+            return cuenta;
         }
-
         public Persona VerClientePorDNI(int dni)
         {
             clientes.Sort();
             Persona cliente = null;
             int idx = clientes.BinarySearch(new Persona(dni, ""));
-            if (idx >= 0) cliente = clientes[idx];
-            return null;
+            if (idx >= 0)
+            {
+                cliente = clientes[idx];
+            }
+            return cliente;
         }
-
         public bool ImportarCuenta(int numero, double saldo, DateTime fecha, Persona persona)
         {
             Persona cliente = VerClientePorDNI(persona.DNI);//lo tengo que hacer porque el banco maneja sus clientes.
@@ -78,7 +87,10 @@ namespace Ejercicio1.Models
 
             //verifico que no exista la cuenta-si existe es porque esta duplicada en el archivo
             Cuenta nueva = VerCuentaPorNumero(numero);
-            if (nueva != null) return false;
+            if (nueva != null)
+            {
+                return false;
+            }
 
             nueva = new Cuenta(numero, cliente, fecha, saldo); //fecha y saldo no lo maneja el banco , porque tengo inyectarlo en el contexto con ese estado
             cuentas.Add(nueva);

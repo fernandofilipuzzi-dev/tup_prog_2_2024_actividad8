@@ -64,13 +64,9 @@ namespace Ejercicio1
                         double saldo= Convert.ToDouble(campos[3].Trim());
                         #endregion
 
-                        #region agregar/actualizar
-                        Cuenta cuenta = banco.VerCuentaPorNumero(numeroCuenta);
-                        if (cuenta == null)
-                        {
-                            cuenta=banco.AgregarCuenta(dni, nombre, numeroCuenta);
-                        }
-                        cuenta.Saldo = saldo;
+                        #region agregar/actualizar - el agregar cuenta se encarga de verificar si existe
+                        Cuenta cuenta=banco.AgregarCuenta(dni, nombre, numeroCuenta);
+                        cuenta.Saldo = saldo;//actualiza el saldo
                         #endregion
                     }
                     #endregion
