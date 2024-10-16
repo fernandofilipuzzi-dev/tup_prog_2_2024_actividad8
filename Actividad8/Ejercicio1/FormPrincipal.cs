@@ -1,5 +1,7 @@
 ﻿using Ejercicio1.Models;
 using System;
+using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Windows.Forms;
@@ -24,7 +26,7 @@ namespace Ejercicio1
             for (int idx = 0; idx < banco.CantidadCuentas; idx++)
             {
                 Cuenta cuenta = banco.VerCuenta(idx);
-                tbVer.Text += $"{cuenta.Numero,20}|{cuenta.Titula.Nombre,20}|{cuenta.Saldo,10:f2}"+Environment.NewLine;
+                tbVer.Text += $"{cuenta.Numero,20}|{cuenta.Titular.Nombre,20}|{cuenta.Saldo,10:f2}"+Environment.NewLine;
             }
         }
 
@@ -44,12 +46,14 @@ namespace Ejercicio1
                     
                     sr=new StreamReader(fs);
 
-                    //descarto la cabecera
-                    sr.ReadLine();
+                    #region ciclo de lectura
+                    //al leer una vez, descarto la cabecera que está en la primera linea
+                    
+                    string linea= sr.ReadLine();
 
                     while (sr.EndOfStream == false)
                     {
-                        string linea = sr.ReadLine();
+                        linea = sr.ReadLine();
 
                         #region parseo
                         string[] campos = linea.Split(';');
@@ -69,6 +73,7 @@ namespace Ejercicio1
                         cuenta.Saldo = saldo;
                         #endregion
                     }
+                    #endregion
                 }
                 catch (Exception ex)
                 {
@@ -93,15 +98,16 @@ namespace Ejercicio1
                 string path = saveFileDialog1.FileName;
 
                 FileStream fs = null;
-                StreamWriter sr = null;
+                StreamWriter sw = null;
                 try
                 {
                     fs = new FileStream(path, FileMode.OpenOrCreate, FileAccess.Write);
 
-                    sr = new StreamWriter(fs);
+                    sw = new StreamWriter(fs);
 
+                    #region ciclo de escritura
                     string linea = $"DNI; nombre; número de cuenta; saldo";
-                    sr.WriteLine(linea);
+                    sw.WriteLine(linea);
 
                     for (int idx = 0; idx < banco.CantidadCuentas; idx++)
                     {
@@ -109,10 +115,11 @@ namespace Ejercicio1
 
                         if (cuenta.Saldo >= 10000)
                         {
-                            linea = $"{cuenta.Titula.DNI};{cuenta.Titula.Nombre};{cuenta.Numero};{cuenta.Saldo:f2}";
-                            sr.WriteLine(linea);
+                            linea = $"{cuenta.Titular.DNI};{cuenta.Titular.Nombre};{cuenta.Numero};{cuenta.Saldo:f2}";
+                            sw.WriteLine(linea);
                         }
                     }
+                    #endregion
                 }
                 catch (Exception ex)
                 {
@@ -120,8 +127,8 @@ namespace Ejercicio1
                 }
                 finally
                 {
-                    if (sr != null) sr.Close();
-                    if (fs != null) sr.Close();
+                    if (sw != null) sw.Close();
+                    if (fs != null) fs.Close();
                 }
 
                 btnVerCuentas.PerformClick();
@@ -130,6 +137,7 @@ namespace Ejercicio1
 
         private void FormPrincipal_Load(object sender, EventArgs e)
         {
+            #region deserialización - recuperando el contexto
             FileStream fs = null;
             try
             {
@@ -148,6 +156,7 @@ namespace Ejercicio1
             { 
                 if(fs!=null) fs.Close();
             }
+            #endregion
 
             #region inicialización y actualización interfaz
             if (banco==null)
@@ -160,6 +169,7 @@ namespace Ejercicio1
 
         private void FormPrincipal_FormClosing(object sender, FormClosingEventArgs e)
         {
+            #region serializacion - salvando el contexto
             FileStream fs = null;
             try
             {
@@ -176,6 +186,163 @@ namespace Ejercicio1
             finally
             {
                 if (fs != null) fs.Close();
+            }
+            #endregion
+        }
+
+        private void btnResguardar_Click(object sender, EventArgs e)
+        {
+            //resguardar o backup es similar al exportar - pero incluyo todo - no filtro ningun registro.
+
+            saveFileDialog1.Title = "Backup del contexto";
+            saveFileDialog1.Filter = "Fichero csv|*.csv";
+            if (saveFileDialog1.ShowDialog() == DialogResult.OK)
+            {
+                string path = saveFileDialog1.FileName;
+
+                FileStream fs = null;
+                StreamWriter sw = null;
+                try
+                {
+                    fs = new FileStream(path, FileMode.OpenOrCreate, FileAccess.Write);
+
+                    sw = new StreamWriter(fs);
+
+                    #region cabeceras
+                    string linea = $"TIPO:BANCO|CLIENTE|CUENTA";
+                    sw.Write(linea);
+                    linea = $"CLIENTE;DNI;NOMBRE";
+                    sw.Write(linea);
+                    linea = $"CUENTA;NUMERO;SALDO;FECHA;DNI TITULAR";
+                    sw.Write(linea);
+                    #endregion
+
+                    #region banco
+                    linea = $"BANCO;";
+                    sw.WriteLine(linea);
+                    #endregion
+
+                    #region clientes
+                    for (int idx = 0; idx < banco.CantidadClientes; idx++)
+                    {
+                        Persona cliente = banco.VerCliente(idx);
+                        linea = $"CLIENTE;{cliente.DNI};{cliente.Nombre}";
+                        sw.WriteLine(linea);
+                    }
+                    #endregion
+
+                    #region cuentas 
+                    for (int idx = 0; idx < banco.CantidadCuentas; idx++)
+                    {
+                        Cuenta cuenta = banco.VerCuenta(idx);
+                        linea = $"CUENTA;{cuenta.Numero};{cuenta.Saldo};{cuenta.Fecha:dd/MM/yyyy};{cuenta.Titular.DNI}";//el dni me sirve como referencia a la persona.
+                        sw.WriteLine (linea);
+                    }
+                    #endregion
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message, "Error al exportar el contexto", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                finally
+                {
+                    if (sw != null) sw.Close();
+                    if (fs != null) fs.Close();
+                }
+            }
+        }
+
+        private void btnRestaurar_Click(object sender, EventArgs e)
+        {
+            //similar al importar - la diferencia es que ahora reemplazo al contexto anterior.
+
+            Banco bancoImportado = null;
+            List<Persona> personas = new List<Persona>();
+
+            openFileDialog1.Title = "Restauración del contexto";
+            openFileDialog1.Filter = "Fichero csv|*.csv";
+            if (openFileDialog1.ShowDialog() == DialogResult.OK)
+            {
+                string path = openFileDialog1.FileName;
+
+                FileStream fs = null;
+                StreamReader sr = null;
+                try
+                {
+                    fs = new FileStream(path, FileMode.Open, FileAccess.Read);
+
+                    sr = new StreamReader(fs);
+
+                    //descarto las cabeceras
+                    sr.ReadLine();
+                    sr.ReadLine();
+                    sr.ReadLine();
+
+                    while (sr.EndOfStream == false)
+                    {
+                        string linea = sr.ReadLine();
+                        string[] campos = linea.Split(';');
+
+                        switch (campos[0])
+                        {
+                            case "BANCO":
+                                {
+                                    bancoImportado = new Banco();
+                                }
+                                break;
+                            case "CLIENTE":
+                                {
+                                    int dni = Convert.ToInt32(campos[1]);
+                                    string nombre = campos[2];
+                                    personas.Add(new Persona(dni, nombre));
+
+                                }
+                                break;
+                            case "CUENTA":
+                                {
+                                    int numero = Convert.ToInt32(campos[1]);
+                                    double saldo = Convert.ToDouble(campos[2]);
+
+                                    CultureInfo culture = CultureInfo.CurrentCulture;
+                                    bool exito = DateTime.TryParseExact(campos[3], "dd/MM/yyyy", culture, DateTimeStyles.None, out DateTime fecha);
+                                    if (exito == false) throw new Exception("Formato fecha inválido");
+
+                                    #region cliente
+                                    int dni = Convert.ToInt32(campos[3]);
+                                    personas.Sort();//esto no es lo mejor, ordenar cada vez que que busco - pero para simplificar esta bien
+                                    Persona cliente = new Persona(dni, "");
+                                    int idx = personas.BinarySearch(cliente);
+                                    if (idx > -1) cliente = personas[idx];
+                                    else throw new Exception($"Cliente no encontrado {dni}");
+                                    #endregion
+
+                                    exito = banco.ImportarCuenta(numero, saldo, fecha, cliente);//necesito un metodo adicional por la estructura del modelo
+                                    if (exito == false) throw new Exception($"No pudo importar la cuenta, linea: {linea}");
+
+                                    //NOTA MUY IMPORTANTE!: Normalmente no lanzamos las excepciones en la misma capa,
+                                    //lo mejor sería tener un metodo importar que reciba la lista de string y ahi haga el proceso
+                                    //
+                                    //el tema está en que si falla necesito interrumpir el proceso
+
+                                }
+                                break;
+                        }
+
+                    }
+
+                    if (bancoImportado != null) banco = bancoImportado;
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message, "Error al importar la cuenta", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                finally
+                {
+                    if (sr != null) sr.Close();
+                    if (fs != null) sr.Close();
+                }
+
+                btnVerCuentas.PerformClick();
             }
         }
     }

@@ -34,6 +34,8 @@
             this.btnExportar = new System.Windows.Forms.Button();
             this.btnVerCuentas = new System.Windows.Forms.Button();
             this.tbVer = new System.Windows.Forms.TextBox();
+            this.btnResguardar = new System.Windows.Forms.Button();
+            this.btnRestaurar = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // openFileDialog1
@@ -42,7 +44,7 @@
             // 
             // btnImportarCuentas
             // 
-            this.btnImportarCuentas.Location = new System.Drawing.Point(569, 84);
+            this.btnImportarCuentas.Location = new System.Drawing.Point(569, 59);
             this.btnImportarCuentas.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.btnImportarCuentas.Name = "btnImportarCuentas";
             this.btnImportarCuentas.Size = new System.Drawing.Size(173, 35);
@@ -53,7 +55,7 @@
             // 
             // btnExportar
             // 
-            this.btnExportar.Location = new System.Drawing.Point(569, 129);
+            this.btnExportar.Location = new System.Drawing.Point(569, 104);
             this.btnExportar.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.btnExportar.Name = "btnExportar";
             this.btnExportar.Size = new System.Drawing.Size(173, 35);
@@ -64,7 +66,7 @@
             // 
             // btnVerCuentas
             // 
-            this.btnVerCuentas.Location = new System.Drawing.Point(569, 39);
+            this.btnVerCuentas.Location = new System.Drawing.Point(569, 14);
             this.btnVerCuentas.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.btnVerCuentas.Name = "btnVerCuentas";
             this.btnVerCuentas.Size = new System.Drawing.Size(173, 35);
@@ -81,14 +83,38 @@
             this.tbVer.Name = "tbVer";
             this.tbVer.ReadOnly = true;
             this.tbVer.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.tbVer.Size = new System.Drawing.Size(560, 278);
+            this.tbVer.Size = new System.Drawing.Size(560, 255);
             this.tbVer.TabIndex = 5;
+            // 
+            // btnResguardar
+            // 
+            this.btnResguardar.Location = new System.Drawing.Point(569, 149);
+            this.btnResguardar.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.btnResguardar.Name = "btnResguardar";
+            this.btnResguardar.Size = new System.Drawing.Size(173, 52);
+            this.btnResguardar.TabIndex = 7;
+            this.btnResguardar.Text = "4- Resguardar (Backup)";
+            this.btnResguardar.UseVisualStyleBackColor = true;
+            this.btnResguardar.Click += new System.EventHandler(this.btnResguardar_Click);
+            // 
+            // btnRestaurar
+            // 
+            this.btnRestaurar.Location = new System.Drawing.Point(569, 211);
+            this.btnRestaurar.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.btnRestaurar.Name = "btnRestaurar";
+            this.btnRestaurar.Size = new System.Drawing.Size(173, 51);
+            this.btnRestaurar.TabIndex = 8;
+            this.btnRestaurar.Text = "5- Restaurar(Restore)";
+            this.btnRestaurar.UseVisualStyleBackColor = true;
+            this.btnRestaurar.Click += new System.EventHandler(this.btnRestaurar_Click);
             // 
             // FormPrincipal
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(755, 293);
+            this.ClientSize = new System.Drawing.Size(755, 271);
+            this.Controls.Add(this.btnRestaurar);
+            this.Controls.Add(this.btnResguardar);
             this.Controls.Add(this.tbVer);
             this.Controls.Add(this.btnVerCuentas);
             this.Controls.Add(this.btnExportar);
@@ -113,6 +139,8 @@
         private System.Windows.Forms.Button btnExportar;
         private System.Windows.Forms.Button btnVerCuentas;
         private System.Windows.Forms.TextBox tbVer;
+        private System.Windows.Forms.Button btnResguardar;
+        private System.Windows.Forms.Button btnRestaurar;
     }
 }
 

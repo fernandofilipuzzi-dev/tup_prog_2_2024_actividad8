@@ -10,13 +10,22 @@ namespace Ejercicio1.Models
         public int Numero { get; set; }
         public double Saldo { get; set; }
         public DateTime Fecha { get; set; }
-        public Persona Titula { get; set; }
+        public Persona Titular { get; set; }
+
         public Cuenta(int numero, Persona cliente) 
         {
             Numero = numero;
             Fecha = DateTime.Today;
             Saldo = 0;
-            Titula = cliente;
+            Titular = cliente;
+        }
+
+        public Cuenta(int numero, Persona cliente, DateTime fecha, double saldo)
+        {
+            Numero = numero;
+            Fecha = fecha;
+            Saldo = saldo;
+            Titular = cliente;
         }
         public int CompareTo(object obj)
         { 

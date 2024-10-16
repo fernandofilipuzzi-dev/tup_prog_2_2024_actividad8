@@ -9,6 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ejercicio2_exportable", "Ej
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Ficheros", "Ficheros", "{86A02CD1-27DC-48A2-B83E-B6699C87FB74}"
 	ProjectSection(SolutionItems) = preProject
+		Ficheros\backup.csv = Ficheros\backup.csv
 		Ficheros\clientes_input.csv = Ficheros\clientes_input.csv
 		Ficheros\clientes_output.csv = Ficheros\clientes_output.csv
 	EndProjectSection

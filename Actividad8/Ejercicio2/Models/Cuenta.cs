@@ -20,6 +20,15 @@ namespace Ejercicio2.Models
             Saldo = 0;
             Titular = cliente;
         }
+
+        public Cuenta(int numero, Persona cliente, DateTime fecha, double saldo)
+        {
+            Numero = numero;
+            Fecha = fecha;
+            Saldo = saldo;
+            Titular = cliente;
+        }
+
         public int CompareTo(object obj)
         { 
             Cuenta cuenta = obj as Cuenta;
