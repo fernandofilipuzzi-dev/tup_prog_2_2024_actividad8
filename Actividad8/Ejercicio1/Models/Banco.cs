@@ -36,6 +36,8 @@ namespace Ejercicio1.Models
             }
             return cuenta;
         }
+
+        /* forma equivalente  al indexador
         public Cuenta VerCuenta(int idx)
         {
             if (idx >= 0 && idx < CantidadCuentas)
@@ -44,6 +46,19 @@ namespace Ejercicio1.Models
             }
             return null;
         }
+        */
+        public Cuenta this[int idx]
+        {
+            get 
+            {
+                if (idx >= 0 && idx < CantidadCuentas)
+                {
+                    return cuentas[idx];
+                }
+                return null;
+            }
+        }
+
         public Persona VerCliente(int idx)
         {
             if (idx >= 0 && idx < CantidadClientes)

@@ -38,6 +38,7 @@ namespace Ejercicio2.Models
             return cuenta;
         }
 
+        /*
         public Cuenta VerCuenta(int idx)
         {
             if (idx >= 0 && idx < CantidadCuentas)
@@ -45,6 +46,18 @@ namespace Ejercicio2.Models
                 return cuentas[idx];
             }
             return null;
+        }
+        */
+        public Cuenta this[int idx]
+        {
+            get
+            {
+                if (idx >= 0 && idx < CantidadCuentas)
+                {
+                    return cuentas[idx];
+                }
+                return null;
+            }
         }
 
         public Persona VerCliente(int idx)

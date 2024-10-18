@@ -25,7 +25,8 @@ namespace Ejercicio1
             tbVer.Text += $"{"-".PadLeft(19, '-'),20}|{"-".PadLeft(19, '-'),-20}|{"-".PadLeft(9, '-'),10}" + Environment.NewLine;
             for (int idx = 0; idx < banco.CantidadCuentas; idx++)
             {
-                Cuenta cuenta = banco.VerCuenta(idx);
+                //Cuenta cuenta = banco.VerCuenta(idx);
+                Cuenta cuenta = banco[idx];
                 tbVer.Text += $"{cuenta.Numero,20}|{cuenta.Titular.Nombre,20}|{cuenta.Saldo,10:f2}"+Environment.NewLine;
             }
         }
@@ -78,7 +79,7 @@ namespace Ejercicio1
                 finally 
                 {
                     if(sr!=null) sr.Close();
-                    if(fs!=null) sr.Close();
+                    if(fs!=null) fs.Close();
                 }
 
                 btnVerCuentas.PerformClick();
@@ -107,7 +108,8 @@ namespace Ejercicio1
 
                     for (int idx = 0; idx < banco.CantidadCuentas; idx++)
                     {
-                        Cuenta cuenta = banco.VerCuenta(idx);
+                        //Cuenta cuenta = banco.VerCuenta(idx);
+                        Cuenta cuenta = banco[idx];
 
                         if (cuenta.Saldo >= 10000)
                         {
@@ -230,7 +232,8 @@ namespace Ejercicio1
                     #region cuentas 
                     for (int idx = 0; idx < banco.CantidadCuentas; idx++)
                     {
-                        Cuenta cuenta = banco.VerCuenta(idx);
+                        //Cuenta cuenta = banco.VerCuenta(idx);
+                        Cuenta cuenta = banco[idx];
                         linea = $"CUENTA;{cuenta.Numero};{cuenta.Saldo};{cuenta.Fecha:dd/MM/yyyy};{cuenta.Titular.DNI}";//el dni me sirve como referencia a la persona.
                         sw.WriteLine (linea);
                     }
@@ -335,7 +338,7 @@ namespace Ejercicio1
                 finally
                 {
                     if (sr != null) sr.Close();
-                    if (fs != null) sr.Close();
+                    if (fs != null) fs.Close();
                 }
 
                 btnVerCuentas.PerformClick();
